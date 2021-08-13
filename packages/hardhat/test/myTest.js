@@ -39,8 +39,10 @@ describe("BBoard Contract", () => {
     });
 
     it('Should cancel a sale', async () => {
+      await contract.cancelSale(firstBlockID);
       expect(idToBBlock[firstBlockID].owner).to.equal(payable(msg.sender));
       expect(idToBBlock[firstBlockID].seller).to.equal(payable(address(0)));
+      expect(idToBBlock[firstBlockID].price).to.equal(0);
     });
 
   });
