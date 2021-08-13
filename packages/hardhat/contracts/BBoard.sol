@@ -13,14 +13,16 @@ import "hardhat/console.sol";
 contract BBoard is ERC721, ERC721URIStorage {
     using Counters for Counters.Counter;
     //id for each created bblock
-    Counters.Counter private _bblockIds;
+    Counters.Counter public _bblockIds;
 
     address payable owner;
     //this is a fee in deployed network (matic) currency
-    uint256 basefee = 500;
+    uint256 private basefee = 500;
+    uint256 private maxBBlocks = 400;
 
     constructor() ERC721("BulletinBlock", "BBLK") {
         owner = payable(msg.sender);
+        mintOnDeploy();
     }
 
     struct BBlock {
@@ -45,7 +47,23 @@ contract BBoard is ERC721, ERC721URIStorage {
         basefee = x;
     }
 
+    function mintOnDeploy() private {
+        for (uint256 i = 0; i < 100; i++) {
+            _bblockIds.increment();
+            uint256 newBBlockId = _bblockIds.current();
+            _mint(owner, newBBlockId);
+
+            idToBBlock[newBBlockId] = BBlock(
+                newBBlockId,
+                payable(address(0)),
+                payable(owner),
+                0
+            );
+        }
+    }
+
     function createToken() public payable returns (uint256) {
+        require(getBBlockIdCounter()<=getMaxBBlocks(),"max limit for BBlocks reached!");
         require(msg.value == getBasefee(), "Price must be equal to basefee");
         owner.transfer(getBasefee());
         _bblockIds.increment();
@@ -93,7 +111,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         owner.transfer(msg.value);
 
         //transfer ownership
-        transferFrom(msg.sender, address(this), bblockId);
+        transferFrom(msg.sender, payable(address(this)), bblockId);
 
         idToBBlock[bblockId].owner = payable(address(this));
         idToBBlock[bblockId].seller = payable(msg.sender);
@@ -195,7 +213,7 @@ contract BBoard is ERC721, ERC721URIStorage {
 
         BBlock[] memory items = new BBlock[](itemCount);
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToBBlock[i + 1].owner != payable(address(0))) {
+            if (idToBBlock[i + 1].seller != payable(address(0))) {
                 uint256 currentId = i + 1;
                 BBlock storage currentItem = idToBBlock[currentId];
                 items[currentIndex] = currentItem;
@@ -208,7 +226,7 @@ contract BBoard is ERC721, ERC721URIStorage {
     function getBBlockIdCounter() public view returns (uint256) {
         return _bblockIds.current();
     }
-    
+
     // function fetchLastNFTs() public view returns (BBlock[] memory) {
     //     uint256 itemCount = 12;
     //     uint256 currentIndex = 0;
@@ -223,7 +241,7 @@ contract BBoard is ERC721, ERC721URIStorage {
     //     for (uint i = x; i < bblocksUpdated.length; i++) {
     //         BBlock storage currentItem = idToBBlock[bblocksUpdated[i]];
     //         items[currentIndex] = currentItem;
-    //         currentIndex += 1;          
+    //         currentIndex += 1;
     //     }
     //     return items;
     // }
@@ -250,6 +268,15 @@ contract BBoard is ERC721, ERC721URIStorage {
     //     }
     //     return items;
     // }
+
+    function getMaxBBlocks() public view returns(uint256){
+        return maxBBlocks;
+    }
+
+    function setMaxBBlocks(uint256 value) public {
+        require(msg.sender == owner);
+        maxBBlocks = value;
+    }
 
     function _burn(uint256 tokenId)
         internal
