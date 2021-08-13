@@ -25,7 +25,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   // });
 
   // const NFT = await ethers.getContract("NFT", deployer);
-  // const BBoard = await ethers.getContract("BBoard", deployer);
+  const BBoard = await ethers.getContract("BBoard", deployer);
   // let baseFee = await BBoard.getBasefee();
   //  baseFee = baseFee.toString();
 

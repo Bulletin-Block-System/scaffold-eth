@@ -13,12 +13,13 @@ import "hardhat/console.sol";
 contract BBoard is ERC721, ERC721URIStorage {
     using Counters for Counters.Counter;
     //id for each created bblock
-    Counters.Counter public _bblockIds;
+    Counters.Counter private _bblockIds;
 
     address payable owner;
     //this is a fee in deployed network (matic) currency
     uint256 private basefee = 500;
     uint256 private maxBBlocks = 400;
+    bool private useFeeMultiplier = true;
 
     constructor() ERC721("BulletinBlock", "BBLK") {
         owner = payable(msg.sender);
@@ -30,6 +31,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         address payable seller;
         address payable owner;
         uint256 price;
+        uint256 feeMultiplier;
     }
 
     //map where bblockId returns the BBlock
@@ -57,13 +59,17 @@ contract BBoard is ERC721, ERC721URIStorage {
                 newBBlockId,
                 payable(address(0)),
                 payable(owner),
+                0,
                 0
             );
         }
     }
 
     function createToken() public payable returns (uint256) {
-        require(getBBlockIdCounter()<=getMaxBBlocks(),"max limit for BBlocks reached!");
+        require(
+            getBBlockIdCounter() <= getMaxBBlocks(),
+            "max limit for BBlocks reached!"
+        );
         require(msg.value == getBasefee(), "Price must be equal to basefee");
         owner.transfer(getBasefee());
         _bblockIds.increment();
@@ -80,17 +86,28 @@ contract BBoard is ERC721, ERC721URIStorage {
             bblockId,
             payable(address(0)),
             payable(msg.sender),
+            0,
             0
         );
 
         emit BBlockCreated(bblockId, payable(msg.sender));
     }
 
-    function addContentToBBlock(uint256 bblockId, string memory URI) public {
+    function addContentToBBlock(uint256 bblockId, string memory URI)
+        public
+        payable
+    {
         require(
             msg.sender == ERC721.ownerOf(bblockId),
             "You don't own this BBlock"
         );
+        uint256 fee = getBasefee();
+        if (getBoolVariableFee()) fee = getVariableFee(bblockId);
+
+        require(msg.value == fee, "Value must be equal to fee");
+
+        if (getBoolVariableFee()) idToBBlock[bblockId].feeMultiplier++;
+
         _setTokenURI(bblockId, URI);
     }
 
@@ -141,6 +158,10 @@ contract BBoard is ERC721, ERC721URIStorage {
 
     function buyBBlock(uint256 bblockId) public payable {
         require(
+            idToBBlock[bblockId].seller != msg.sender,
+            "seller can't be buyer"
+        );
+        require(
             idToBBlock[bblockId].seller != payable(address(0)),
             "BBlock not for sale"
         );
@@ -167,6 +188,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         idToBBlock[bblockId].owner = payable(msg.sender);
 
         owner.transfer(getBasefee());
+        idToBBlock[bblockId].feeMultiplier = 0;
     }
 
     function getPrice(uint256 bblockId) public view returns (uint256) {
@@ -269,13 +291,33 @@ contract BBoard is ERC721, ERC721URIStorage {
     //     return items;
     // }
 
-    function getMaxBBlocks() public view returns(uint256){
+    function getFeeMultiplier(uint256 bblockId) public view returns (uint256) {
+        require(getBBlockIdCounter() >= bblockId);
+        return idToBBlock[bblockId].feeMultiplier;
+    }
+
+    function getVariableFee(uint256 bblockId) public view returns (uint256) {
+        return (idToBBlock[bblockId].feeMultiplier *
+            ((getBasefee() * 1000) / 10000) +
+            getBasefee());
+    }
+
+    function getMaxBBlocks() public view returns (uint256) {
         return maxBBlocks;
     }
 
     function setMaxBBlocks(uint256 value) public {
         require(msg.sender == owner);
         maxBBlocks = value;
+    }
+
+    function setBoolVariableFee(bool value) public {
+        require(msg.sender == owner);
+        useFeeMultiplier = value;
+    }
+
+    function getBoolVariableFee() public view returns (bool) {
+        return useFeeMultiplier;
     }
 
     function _burn(uint256 tokenId)
