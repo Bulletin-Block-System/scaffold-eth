@@ -101,14 +101,17 @@ contract BBoard is ERC721, ERC721URIStorage {
             msg.sender == ERC721.ownerOf(bblockId),
             "You don't own this BBlock"
         );
-        uint256 fee = getBasefee();
-        if (getBoolVariableFee()) fee = getVariableFee(bblockId);
 
-        require(msg.value == fee, "Value must be equal to fee");
+        require(
+            msg.value == getContentChangeFee(bblockId),
+            "Value must be equal to fee"
+        );
 
-        if (getBoolVariableFee()) idToBBlock[bblockId].feeMultiplier++;
+        owner.transfer(getContentChangeFee(bblockId));
 
         _setTokenURI(bblockId, URI);
+
+        if (getBoolVariableFee()) idToBBlock[bblockId].feeMultiplier++;
     }
 
     function sellBBlock(uint256 bblockId, uint256 price) public payable {
@@ -296,10 +299,18 @@ contract BBoard is ERC721, ERC721URIStorage {
         return idToBBlock[bblockId].feeMultiplier;
     }
 
-    function getVariableFee(uint256 bblockId) public view returns (uint256) {
-        return (idToBBlock[bblockId].feeMultiplier *
-            ((getBasefee() * 1000) / 10000) +
-            getBasefee());
+    function getContentChangeFee(uint256 bblockId)
+        public
+        view
+        returns (uint256)
+    {
+        if (getBoolVariableFee()) {
+            return (idToBBlock[bblockId].feeMultiplier *
+                ((getBasefee() * 1000) / 10000) +
+                getBasefee());
+        } else {
+            return getBasefee();
+        }
     }
 
     function getMaxBBlocks() public view returns (uint256) {
