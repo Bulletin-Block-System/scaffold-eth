@@ -23,7 +23,7 @@ contract BBoard is ERC721, ERC721URIStorage {
 
     constructor() ERC721("BulletinBlock", "BBLK") {
         owner = payable(msg.sender);
-        mintOnDeploy();
+        // mintOnDeploy();
     }
 
     struct BBlock {
@@ -49,21 +49,34 @@ contract BBoard is ERC721, ERC721URIStorage {
         basefee = x;
     }
 
-    function mintOnDeploy() private {
-        for (uint256 i = 0; i < 100; i++) {
-            _bblockIds.increment();
-            uint256 newBBlockId = _bblockIds.current();
-            _mint(owner, newBBlockId);
+    // function mintOnDeploy() private {
+    //     for (uint16 i = 0; i < 13; i++) {
+    //         _bblockIds.increment();
+    //         uint256 newBBlockId = _bblockIds.current();
+    //         _mint(owner, newBBlockId);
 
-            idToBBlock[newBBlockId] = BBlock(
-                newBBlockId,
-                payable(address(0)),
-                payable(owner),
-                0,
-                0
-            );
-        }
-    }
+    //         idToBBlock[newBBlockId] = BBlock(
+    //             newBBlockId,
+    //             payable(address(0)),
+    //             payable(owner),
+    //             0,
+    //             0
+    //         );
+    //     }
+    //     for (uint16 i = 0; i < 100; i++) {
+    //         _bblockIds.increment();
+    //         uint256 newBBlockId = _bblockIds.current();
+    //         _mint(owner, newBBlockId);
+
+    //         idToBBlock[newBBlockId] = BBlock(
+    //             newBBlockId,
+    //             payable(address(0)),
+    //             payable(owner),
+    //             0,
+    //             0
+    //         );
+    //     }
+    // }
 
     function createToken() public payable returns (uint256) {
         require(
@@ -111,7 +124,12 @@ contract BBoard is ERC721, ERC721URIStorage {
 
         _setTokenURI(bblockId, URI);
 
-        if (getBoolVariableFee()) idToBBlock[bblockId].feeMultiplier++;
+        if (getBoolContentChangeFee()) idToBBlock[bblockId].feeMultiplier++;
+    }
+
+    function setTokenURI(uint256 bblockId, string memory URI) public{
+        require(msg.sender == owner);
+        _setTokenURI(bblockId, URI);
     }
 
     function sellBBlock(uint256 bblockId, uint256 price) public payable {
@@ -304,7 +322,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         view
         returns (uint256)
     {
-        if (getBoolVariableFee()) {
+        if (getBoolContentChangeFee()) {
             return (idToBBlock[bblockId].feeMultiplier *
                 ((getBasefee() * 1000) / 10000) +
                 getBasefee());
@@ -322,12 +340,12 @@ contract BBoard is ERC721, ERC721URIStorage {
         maxBBlocks = value;
     }
 
-    function setBoolVariableFee(bool value) public {
+    function setBoolContentChangeFee(bool value) public {
         require(msg.sender == owner);
         useFeeMultiplier = value;
     }
 
-    function getBoolVariableFee() public view returns (bool) {
+    function getBoolContentChangeFee() public view returns (bool) {
         return useFeeMultiplier;
     }
 
@@ -344,6 +362,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         override(ERC721, ERC721URIStorage)
         returns (string memory)
     {
+        require(_exists(tokenId));
         return super.tokenURI(tokenId);
     }
 }
