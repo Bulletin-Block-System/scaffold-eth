@@ -4,23 +4,47 @@ const { solidity } = require("ethereum-waffle");
 
 use(solidity);
 
-describe("My Dapp", function () {
-  let myContract;
+describe("BBoard Contract", () => {
+  let myContract, contract, owner, addr1, addr2;
 
-  describe("YourContract", function () {
-    it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
+  beforeEach(async () => {
+    myContract = await ethers.getContractFactory('BBoard');
+    contract = await myContract.deploy();
+    [owner, addr1, addr2, _] = await ethers.getSigners();
+  });
 
-      myContract = await YourContract.deploy();
-    });
-
-    describe("setPurpose()", function () {
-      it("Should be able to set a new purpose", async function () {
-        const newPurpose = "Test Purpose";
-
-        await myContract.setPurpose(newPurpose);
-        expect(await myContract.purpose()).to.equal(newPurpose);
-      });
+  describe('Deployment', () => {
+    it('Should set the owner of the contract', async () => {
+      expect(await contract.owner()).to.equal(owner.address);
     });
   });
+
+  describe('Create Token', () => {
+    it('Should create a token and return his ID', async () => {
+      const firstBlockID = await contract.CreateToken();
+      expect(firstBlockID).to.equal(1);
+    });
+
+    it('Should set Token Uri', async () => {
+      const testUri = "testUri";
+      await contract.addContentToBBlock(firstBlockID, testUri);
+      expect(tokenURI(firstBlockID)).to.equal(testUri);
+    });
+
+    it('Should sell BBlock', async () => {
+      await contract.sellBBlock(firstBlockID, 5);
+      expect(idToBBlock[firstBlockID].owner).to.equal(payable(address(this)));
+      expect(idToBBlock[firstBlockID].seller).to.equal(payable(msg.sender));
+      expect(idToBBlock[firstBlockID].price).to.equal(5);
+    });
+
+    it('Should cancel a sale', async () => {
+      expect(idToBBlock[firstBlockID].owner).to.equal(payable(msg.sender));
+      expect(idToBBlock[firstBlockID].seller).to.equal(payable(address(0)));
+    });
+
+  });
+
 });
+  
+  
