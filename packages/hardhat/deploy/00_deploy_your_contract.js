@@ -33,51 +33,51 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     await BBoard.createToken({ value: baseFee });
   }
   await BBoard.setTokenURI(
-    1,
+    0,
     "ipfs://bafyreifappl3rwoghu4urnyttalfijdsavdwqxv35esp2z5lxahhnffodq/metadata.json"
   );
   await BBoard.setTokenURI(
-    2,
+    1,
     "ipfs://bafyreibu3rvfq6guizvqbdndkwppzj6blq7q55fbqzx6v2y3csfiucj2qu/metadata.json"
   );
   await BBoard.setTokenURI(
-    3,
+    2,
     "ipfs://bafyreiaiezstqyb6xoyvhpj2re5gsyb7ajttsnqmsft35s4njv6m3fmgbu/metadata.json"
   );
   await BBoard.setTokenURI(
-    4,
+    3,
     "ipfs://bafyreiezia2pdtpb3kheqtv3efdv7nxbb7cvxftemwqomy3xe2t55n3cma/metadata.json"
   );
   await BBoard.setTokenURI(
-    5,
+    4,
     "ipfs://bafyreidjit5ngt76vou5slin3b55yhaldehj3quzkihgopbzrqwvidx46m/metadata.json"
   );
   await BBoard.setTokenURI(
-    6,
+    5,
     "ipfs://bafyreihpwgm6dbfb2aj2vyoqltxuvgpe7q4bxgvtcxfbf3llriz3vmxcka/metadata.json"
   );
   await BBoard.setTokenURI(
-    7,
+    6,
     "ipfs://bafyreiant54tanwwwqmp5kpw72ugzmk575nx5y4fsaf5irchddulb7j4ku/metadata.json"
   );
   await BBoard.setTokenURI(
-    8,
+    7,
     "ipfs://bafyreiagjk5hd6fn5zxwpajw66cvcnc544fxdgevkfmw3k4pyoutnioei4/metadata.json"
   );
   await BBoard.setTokenURI(
-    9,
+    8,
     "ipfs://bafyreifblzrat4tzorrfvxqvkvbshwovburpe65t7epz3xkudq2hofyo7a/metadata.json"
   );
   await BBoard.setTokenURI(
-    10,
+    9,
     "ipfs://bafyreia66lggcxloalo6ljukc6vayznbm74eyy4vlu5k5wyazetv4mktve/metadata.json"
   );
   await BBoard.setTokenURI(
-    11,
+    10,
     "ipfs://bafyreideayrlti4dsjcd34a5v2by45yxkovkfakrv6yicxp333ejgvr25m/metadata.json"
   );
   await BBoard.setTokenURI(
-    12,
+    11,
     "ipfs://bafyreidtqnplvyukhsmu4rxftelpj4rmapwhkxr7dinpelfpuo7iojilam/metadata.json"
   );
 

@@ -86,8 +86,8 @@ contract BBoard is ERC721, ERC721URIStorage {
         );
         require(msg.value == getBasefee(), "Price must be equal to basefee");
         owner.transfer(getBasefee());
-        _bblockIds.increment();
         uint256 newBBlockId = _bblockIds.current();
+        _bblockIds.increment();
         _mint(msg.sender, newBBlockId);
         //save new bblock
         addNewBBlock(newBBlockId);
@@ -230,15 +230,15 @@ contract BBoard is ERC721, ERC721URIStorage {
         uint256 currentIndex = 0;
 
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToBBlock[i + 1].owner == adr) {
+            if (idToBBlock[i].owner == adr) {
                 itemCount += 1;
             }
         }
 
         BBlock[] memory items = new BBlock[](itemCount);
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToBBlock[i + 1].owner == adr) {
-                uint256 currentId = i + 1;
+            if (idToBBlock[i].owner == adr) {
+                uint256 currentId = i;
                 BBlock storage currentItem = idToBBlock[currentId];
                 items[currentIndex] = currentItem;
                 currentIndex += 1;
@@ -253,15 +253,15 @@ contract BBoard is ERC721, ERC721URIStorage {
         uint256 currentIndex = 0;
 
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToBBlock[i + 1].seller != payable(address(0))) {
+            if (idToBBlock[i].seller != payable(address(0))) {
                 itemCount += 1;
             }
         }
 
         BBlock[] memory items = new BBlock[](itemCount);
         for (uint256 i = 0; i < totalItemCount; i++) {
-            if (idToBBlock[i + 1].seller != payable(address(0))) {
-                uint256 currentId = i + 1;
+            if (idToBBlock[i].seller != payable(address(0))) {
+                uint256 currentId = i;
                 BBlock storage currentItem = idToBBlock[currentId];
                 items[currentIndex] = currentItem;
                 currentIndex += 1;
