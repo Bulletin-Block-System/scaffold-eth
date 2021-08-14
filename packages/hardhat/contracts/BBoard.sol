@@ -217,6 +217,9 @@ contract BBoard is ERC721, ERC721URIStorage {
         return idToBBlock[bblockId].price;
     }
 
+    function fetchBBlockById(uint256 bblockId) public view returns (BBlock memory) {
+        return idToBBlock[bblockId];
+    }
     function fetchBBlocksByAddress(address adr)
         public
         view
