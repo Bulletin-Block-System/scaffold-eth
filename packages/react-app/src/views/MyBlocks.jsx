@@ -129,7 +129,7 @@ function MakeBlockModal() {
   );
 }
 
-function ShowUpdateTokenUriModalDialog({ tx, writeContracts, tokenId, isDefaultOpen, hideButton, onClose }) {
+function ShowUpdateTokenUriModalDialog({ tx, readContracts, writeContracts, tokenId, contentChangeFee, isDefaultOpen, hideButton, onClose }) {
 
   isDefaultOpen = isDefaultOpen == undefined ? false : isDefaultOpen;
   const classes = useModalStyles();
@@ -138,6 +138,7 @@ function ShowUpdateTokenUriModalDialog({ tx, writeContracts, tokenId, isDefaultO
   const [open, setOpen] = React.useState(isDefaultOpen);
   const [selectedFileState, setSelectedFileState] = React.useState({});
 
+  //const contentChangeFee = useContractReader(readContracts, "BBoard", "getContentChangeFee", [tokenId]);
   const handleOpen = () => {
     setOpen(true);
   };
@@ -170,7 +171,7 @@ function ShowUpdateTokenUriModalDialog({ tx, writeContracts, tokenId, isDefaultO
     fileState = 'UPLOADED';
     setSelectedFileState({ ...selectedFileState, metadata, userMessage, fileState });
 
-    const result = await tx(writeContracts.BBoard.addContentToBBlock(tokenId, metadata.url), update => {
+    const result = await tx(writeContracts.BBoard.addContentToBBlock(tokenId, metadata.url, { value: contentChangeFee }), update => {
       console.log("📡 Transaction Update:", update);
       if (update && (update.status === "confirmed" || update.status === 1)) {
         console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -199,17 +200,19 @@ function ShowUpdateTokenUriModalDialog({ tx, writeContracts, tokenId, isDefaultO
       <p>The file will be uploaded to IPFS. This might take a while, please wait for it complete.</p>
       <p>You will be prompted to Approve a transaction once the file is uploaded. This is to update the new ipfs url into your token contract.</p>
       <p>Approve the transaction when the prompt is shown.</p>
+      <p>There's a small fee of {contentChangeFee ? contentChangeFee.toString() : '...'} that increases after every write.</p>
       <p>
         <input type="file" id="input" onChange={(evt) => processFile(evt.target.files[0])} />
       </p><p>
         {fileObjectUrl}
         {selectedFileState.fileObjectUrl &&
           <AnsiImageRender style={{ fontSize: 24, lineHeight: '24px', width: 270, height: 270, overflow: 'scroll' }} tokenURI={selectedFileState.fileObjectUrl} />}
-      </p><p>
+      </p>
+      <div>
         {selectedFileState.fileState == 'SELECTED' && selectedFileState.file && <button onClick={() => uploadFileAndProceed()}>Upload</button>}
         {selectedFileState.fileState == 'UPLOADING' && <Spin />}
         <p>{selectedFileState.userMessage}</p>
-      </p>
+      </div>
     </div>
   );
 
@@ -376,17 +379,18 @@ function BlockCardsForSale({ tx, readContracts, writeContracts, browserAddress, 
   //return (<span>BlockCardsForSale is broken</span>);
   const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksForSale");
   // [bblockId, owner, price, seller]
-  return bBlocks ? bBlocks.map((b) => (<BlockCard tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
+  return bBlocks ? bBlocks.map((b) => (<BlockCard key={b.blockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
 }
 
 function BlockCardsByAddress({ tx, readContracts, writeContracts, browserAddress, blockMintFee, ownerAddress } ) {
   const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksByAddress", [ownerAddress]);
   // [bblockId, owner, price, seller]
-  return bBlocks ? bBlocks.map((b) => (<BlockCard tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
+  return bBlocks ? bBlocks.map((b) => (<BlockCard key={b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
 }
 
 function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAddress, tokenId, ownerAddress, seller, price } ) {
   const tokenURI = useContractReader(readContracts, "BBoard", "tokenURI", [tokenId]);
+  const contentChangeFee = useContractReader(readContracts, "BBoard", "getContentChangeFee", [tokenId]);
   // XXX is tokenId and bBlockId the same? is it reliable to calculate position?
   const classes = useStyles();
   const defaultSellPrice = 1000;
@@ -405,8 +409,9 @@ function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAd
               <li>Owner: {ownerAddress}</li>
               <li>Sale Status: {seller}</li>
               <li>Price: {price ? price.toString() : 'N/A'}</li>
+              <li>Write Fee: {contentChangeFee ? contentChangeFee.toString() : 'N/A'}</li>
             </ul>
-            <ShowUpdateTokenUriModalDialog tokenId={localTokenId} isDefaultOpen={false} tx={tx} writeContracts={writeContracts} hideButton={false} />
+            <ShowUpdateTokenUriModalDialog tokenId={localTokenId} contentChangeFee={contentChangeFee} isDefaultOpen={false} tx={tx} readContracts={readContracts} writeContracts={writeContracts} hideButton={false} />
             <Button
               /* MUI color="primary" variant="outlined" */
               type="primary" size="large"
@@ -580,7 +585,7 @@ export default function MyBlocks({
               Mint!
             </Button>
             {showUpdateTokenUriModal && newTokenId && 
-            <ShowUpdateTokenUriModalDialog tokenId={newTokenId} isDefaultOpen={true} tx={tx} writeContracts={writeContracts} hideButton={true} onClose={() =>setshowUpdateTokenUriModal(false)}/>
+            <ShowUpdateTokenUriModalDialog tokenId={newTokenId} contentChangeFee={blockMintFee /*XXX assumes initial blockMintFee=contentChangeFee*/} isDefaultOpen={true} tx={tx} writeContracts={writeContracts} hideButton={true} onClose={() =>setshowUpdateTokenUriModal(false)}/>
             }
           </Grid>
         </Grid>
