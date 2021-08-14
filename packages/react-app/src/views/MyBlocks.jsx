@@ -100,7 +100,7 @@ function MakeBlockModal() {
       <p>
         Current contents:
         
-        <AnsiImageRender style={{fontSize: 24, lineHeight: '24px', width: 270 }} tokenURI={"tna1.ans"} />
+        <AnsiImageRender style={{fontSize: 24, lineHeight: '24px', width: 270 }} tokenURI={"floppy.ans"} />
       </p><p>
         Choose .ans file to save into your chosen block:
         <input type="file" id="input" onChange={(evt) => console.log("event: ", evt, "selected file: ", evt.target.files[0])} />
@@ -254,6 +254,38 @@ const useStyles = makeStyles((theme) => ({
         },
 }));
 
+function GenesisScroll({ tx, readContracts /*, writeContracts, browserAddress, blockMintFee*/ } ) {
+  const classes = useStyles();
+  // assume tokenId starts from 0
+  const bBlockURIs = [...Array(16)].map((_, i) => useContractReader(readContracts, "BBoard", "tokenURI", [i]));
+  return (
+    <div className={classes.root}>
+      <Grid container justifyContent="center">
+          <h2 className={classes.sectionH2}>Genesis Scroll</h2>
+          <div className="ansi-grid-wrapper" style={{color: 'white', backgroundColor: 'black'}}>
+            <Grid container >
+              {bBlockURIs.slice(0, 4).map((tokenURI) =>
+                (<AnsiImageRender style={{fontSize: 24, lineHeight: '24px', height: 240, width: 284 }} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+              )}
+            </Grid><Grid container spacing={3,0} >
+              {bBlockURIs.slice(4, 8).map((tokenURI) =>
+                (<AnsiImageRender style={{fontSize: 24, lineHeight: '24px', height: 240, width: 284 }} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+              )}
+            </Grid><Grid container spacing={3,0} >
+              {bBlockURIs.slice(8, 12).map((tokenURI) =>
+                (<AnsiImageRender style={{fontSize: 24, lineHeight: '24px', height: 240, width: 284 }} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+              )}
+            </Grid><Grid container spacing={3,0} >
+              {bBlockURIs.slice(12, 16).map((tokenURI) =>
+                (<AnsiImageRender style={{fontSize: 24, lineHeight: '24px', height: 240, width: 284 }} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+              )}
+            </Grid>
+          </div>
+      </Grid>
+    </div>
+  )
+}
+  
 function MainScroll() {
   const classes = useStyles();
   // TODO fetch blocks from contract and render
@@ -276,7 +308,7 @@ function MainScroll() {
                       </div>
               ))}
             </Grid><Grid container spacing={3,0} >
-              {'tna1.ans|tna2.ans|tnb1.ans|info3.txt'.split('|').map((uri, i) => (
+              {'floppy.ans|tna2.ans|tnb1.ans|info3.txt'.split('|').map((uri, i) => (
                       <div key={"ansi1-" + i} className="ansi-wrapper" style={{maxWidth: 400}}>
                         <AnsiImageRender style={{fontSize: 24, lineHeight: '24px', width: 270 }} tokenURI={uri} />
                       </div>
@@ -288,13 +320,13 @@ function MainScroll() {
                       </div>
               ))}
             </Grid><Grid container spacing={3,0} >
-              {'tna1.ans|tna2.ans|tnb1.ans|tnb2.ans'.split('|').map((uri, i) => (
+              {'floppy.ans|tna2.ans|tnb1.ans|tnb2.ans'.split('|').map((uri, i) => (
                       <div key={"ansi1-" + i} className="ansi-wrapper" style={{maxWidth: 400}}>
                         <AnsiImageRender style={{fontSize: 24, lineHeight: '24px', width: 270 }} tokenURI={uri} />
                       </div>
               ))}
             </Grid><Grid container spacing={3,0} >
-              {'tna1.ans|tna2.ans|tnb1.ans|tnb2.ans'.split('|').map((uri, i) => (
+              {'floppy.ans|tna2.ans|tnb1.ans|tnb2.ans'.split('|').map((uri, i) => (
                       <div key={"ansi1-" + i} className="ansi-wrapper" style={{maxWidth: 400}}>
                         <AnsiImageRender style={{fontSize: 24, lineHeight: '24px', width: 270 }} tokenURI={uri} />
                       </div>
@@ -317,7 +349,7 @@ function MainScroll() {
 function RecentlySavedBlocks({limit}) {
   const classes = useStyles();
   let ansiFileNames = [
-    'tna1.ans',
+    'floppy.ans',
     'tna2.ans',
     'tna3.ans',
     'tna4.ans',
@@ -407,7 +439,7 @@ function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAd
         <Grid key={tokenId} item xs >
           <Paper className={classes.paper} style={{maxWidth: 400}}>
             <div className="ansi-wrapper" style={{display: 'inline-block'}} >
-              <AnsiImageRender style={{fontSize: 24, lineHeight: '24px', height: 240, width: 284 }} tokenURI={tokenURI ? tokenURI : 'tna1.ans'} />
+              <AnsiImageRender style={{fontSize: 24, lineHeight: '24px', height: 240, width: 284 }} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />
             </div>
             <h3>URI: {tokenURI}</h3>
             <ul>
@@ -492,13 +524,15 @@ export default function MyBlocks({
       <div style={{ border: "1px solid #cccccc", padding: 16, /*width: 400,*/ margin: "auto", marginTop: 64 }}>
         {/*<h2>Bulletin Block System Permissionless Distributed UI:</h2>*/}
         {/* <h4>purpose: {purpose}</h4> */}
-        <MainScroll />
+        <GenesisScroll tx={tx} readContracts={readContracts} />
+        <Divider />
         <Grid container justifyContent="center">
           <Grid item>
-            <h2 className={classes.sectionH2}>{'First Blocks'}</h2>
+            <h2 className={classes.sectionH2}>{'Genesis Blocks'}</h2>
             <Grid container spacing={3,0} >
               <BlockCards1stDozen tx={tx} readContracts={readContracts} writeContracts={writeContracts} browserAddress={address} blockMintFee={blockMintFee} />
             </Grid>
+            <Divider />
             <h2 className={classes.sectionH2}>{filterAddress == addressBlockCount ? 'Your Blocks' : 'Blocks By Address'} ({blocksCount})</h2>
             <p>currently {addressBlockCount} blocks at {filterAddress}</p>
             <Input
@@ -533,6 +567,7 @@ export default function MyBlocks({
                 </p>
               </Grid>
             </Grid>
+            <Divider />
             <h2 style={{fontFamily: '"Roboto", sans-serif', fontSize: '4em', fontWeight: 800}} className='foobar'>Blocks For Sale</h2>
             <Grid container spacing={3,0} >
               <BlockCardsForSale tx={tx} readContracts={readContracts} writeContracts={writeContracts} browserAddress={address} blockMintFee={blockMintFee} />
@@ -544,6 +579,7 @@ export default function MyBlocks({
                 </p>
               </Grid>
             </Grid>
+            <Divider />
             <h2 style={{fontFamily: '"Roboto", sans-serif', fontSize: '4em', fontWeight: 800}} className='foobar'>Mint an Empty Block</h2>
             <Grid container justifyContent="center"><Grid item>
               <MintBlockCard readContracts={readContracts} blockMintFee={blockMintFee} />
@@ -599,6 +635,7 @@ export default function MyBlocks({
             {showUpdateTokenUriModal && newTokenId && 
             <ShowUpdateTokenUriModalDialog tokenId={newTokenId} contentChangeFee={blockMintFee /*XXX assumes initial blockMintFee=contentChangeFee*/} isDefaultOpen={true} tx={tx} writeContracts={writeContracts} hideButton={true} onClose={() =>setshowUpdateTokenUriModal(false)}/>
             }
+            <Divider />
             <h2 style={{fontFamily: '"Roboto", sans-serif', fontSize: '4em', fontWeight: 800}} className='foobar'>Recently Saved Blocks</h2>
             <Grid container spacing={3,0} >
               <BlockCardsRecentlySaved tx={tx} readContracts={readContracts} writeContracts={writeContracts} browserAddress={address} blockMintFee={blockMintFee} />
