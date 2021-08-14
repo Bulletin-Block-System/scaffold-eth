@@ -313,6 +313,7 @@ function MainScroll() {
     </div>
   )
 }
+/*
 function RecentlySavedBlocks({limit}) {
   const classes = useStyles();
   let ansiFileNames = [
@@ -322,11 +323,6 @@ function RecentlySavedBlocks({limit}) {
     'tna4.ans',
     'tna4.ans',
     'tna4.ans',
-    /*
-    'Shion%20in%20Monster%20World.ans',
-    'TestPattern%20ANSI.ans',
-    'Tetris.ans',
-    */
   ];
   //let ansiUriArr = ansiFileNames.map(a => ({name: a, path: 'https://raw.githubusercontent.com/PhMajerus/ANSI-art/master/' + a}));
   let ansiUriArr = ansiFileNames.map(a => ({name: a, path: '/' + a}));
@@ -354,7 +350,7 @@ function RecentlySavedBlocks({limit}) {
     </div>
   )
 }
-
+*/
 function MintBlockCard({ readContracts, blockMintFee } ) {
   //const tokenSupply = useContractReader(readContracts, "BBoard", "tokenSupply");
   const tokenSupply = useContractReader(readContracts, "BBoard", "getBBlockIdCounter");
@@ -373,6 +369,13 @@ function MintBlockCard({ readContracts, blockMintFee } ) {
           </Paper>
         </Grid>
   )
+}
+
+function BlockCards1stDozen({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
+  const bBlocks = [...Array(12)].map((_, i) => useContractReader(readContracts, "BBoard", "fetchBBlockById", [i]));
+  console.log(bBlocks);
+  // [bblockId, owner, price, seller]
+  return bBlocks.map((b) => !b ? '' : (<BlockCard key={b.bblockId.toString()} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />));
 }
 
 function BlockCardsForSale({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
@@ -492,6 +495,10 @@ export default function MyBlocks({
         <MainScroll />
         <Grid container justifyContent="center">
           <Grid item>
+            <h2 className={classes.sectionH2}>{'First Blocks'}</h2>
+            <Grid container spacing={3,0} >
+              <BlockCards1stDozen tx={tx} readContracts={readContracts} writeContracts={writeContracts} browserAddress={address} blockMintFee={blockMintFee} />
+            </Grid>
             <h2 className={classes.sectionH2}>{filterAddress == addressBlockCount ? 'Your Blocks' : 'Blocks By Address'} ({blocksCount})</h2>
             <p>currently {addressBlockCount} blocks at {filterAddress}</p>
             <Input
@@ -598,9 +605,6 @@ export default function MyBlocks({
             </Grid>
           </Grid>
         </Grid>
-        <Divider />
-        <RecentlySavedBlocks limit={3} />
-        <Divider />
       </div>
     </div>
   );
