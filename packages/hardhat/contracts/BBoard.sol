@@ -1,13 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-//import "../@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
 contract BBoard is ERC721, ERC721URIStorage {
@@ -20,11 +17,10 @@ contract BBoard is ERC721, ERC721URIStorage {
     uint256 private basefee = 500;
     uint256 private maxBBlocks = 400;
     bool private useFeeMultiplier = true;
-    uint256[] bblocksUpdated;
-    
+    uint256[] private bblocksUpdated;
+
     constructor() ERC721("BulletinBlock", "BBLK") {
         owner = payable(msg.sender);
-        // mintOnDeploy();
     }
 
     struct BBlock {
@@ -33,6 +29,11 @@ contract BBoard is ERC721, ERC721URIStorage {
         address payable owner;
         uint256 price;
         uint256 feeMultiplier;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner);
+        _;
     }
 
     //map where bblockId returns the BBlock
@@ -45,39 +46,9 @@ contract BBoard is ERC721, ERC721URIStorage {
         return basefee;
     }
 
-    function setBasefee(uint256 x) public {
-        require(msg.sender == owner);
+    function setBasefee(uint256 x) public onlyOwner {
         basefee = x;
     }
-
-    // function mintOnDeploy() private {
-    //     for (uint16 i = 0; i < 13; i++) {
-    //         _bblockIds.increment();
-    //         uint256 newBBlockId = _bblockIds.current();
-    //         _mint(owner, newBBlockId);
-
-    //         idToBBlock[newBBlockId] = BBlock(
-    //             newBBlockId,
-    //             payable(address(0)),
-    //             payable(owner),
-    //             0,
-    //             0
-    //         );
-    //     }
-    //     for (uint16 i = 0; i < 100; i++) {
-    //         _bblockIds.increment();
-    //         uint256 newBBlockId = _bblockIds.current();
-    //         _mint(owner, newBBlockId);
-
-    //         idToBBlock[newBBlockId] = BBlock(
-    //             newBBlockId,
-    //             payable(address(0)),
-    //             payable(owner),
-    //             0,
-    //             0
-    //         );
-    //     }
-    // }
 
     function createToken() public payable returns (uint256) {
         require(
@@ -128,8 +99,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         if (getBoolContentChangeFee()) idToBBlock[bblockId].feeMultiplier++;
     }
 
-    function setTokenURI(uint256 bblockId, string memory URI) public{
-        require(msg.sender == owner);
+    function setTokenURI(uint256 bblockId, string memory URI) public onlyOwner {
         _setTokenURI(bblockId, URI);
     }
 
@@ -217,9 +187,14 @@ contract BBoard is ERC721, ERC721URIStorage {
         return idToBBlock[bblockId].price;
     }
 
-    function fetchBBlockById(uint256 bblockId) public view returns (BBlock memory) {
+    function fetchBBlockById(uint256 bblockId)
+        public
+        view
+        returns (BBlock memory)
+    {
         return idToBBlock[bblockId];
     }
+
     function fetchBBlocksByAddress(address adr)
         public
         view
@@ -275,46 +250,22 @@ contract BBoard is ERC721, ERC721URIStorage {
     }
 
     function fetchLastNFTs() public view returns (BBlock[] memory) {
-         uint256 itemCount = 12;
-         uint256 currentIndex = 0;
-         uint256 x;
-         if(bblocksUpdated.length > 12) {
-             x = bblocksUpdated.length - 12;
-         }
-         else {
-             x = 0;
-         }
-         BBlock[] memory items = new BBlock[](itemCount);
-         for (uint i = x; i < bblocksUpdated.length; i++) {
-             BBlock storage currentItem = idToBBlock[bblocksUpdated[i]];
-             items[currentIndex] = currentItem;
-             currentIndex += 1;
-         }
-         return items;
+        uint256 itemCount = 12;
+        uint256 currentIndex = 0;
+        uint256 x;
+        if (bblocksUpdated.length > 12) {
+            x = bblocksUpdated.length - 12;
+        } else {
+            x = 0;
+        }
+        BBlock[] memory items = new BBlock[](itemCount);
+        for (uint256 i = x; i < bblocksUpdated.length; i++) {
+            BBlock storage currentItem = idToBBlock[bblocksUpdated[i]];
+            items[currentIndex] = currentItem;
+            currentIndex += 1;
+        }
+        return items;
     }
-
-    // function fetchMyNFTs() public view returns (BBlock[] memory) {
-    //     uint256 totalItemCount = _bblockIds.current();
-    //     uint256 itemCount = 0;
-    //     uint256 currentIndex = 0;
-
-    //     for (uint256 i = 0; i < totalItemCount; i++) {
-    //         if (idToBBlock[i + 1].owner == payable(msg.sender)) {
-    //             itemCount += 1;
-    //         }
-    //     }
-
-    //     BBlock[] memory items = new BBlock[](itemCount);
-    //     for (uint256 i = 0; i < totalItemCount; i++) {
-    //         if (idToBBlock[i + 1].owner == payable(msg.sender)) {
-    //             uint256 currentId = i + 1;
-    //             BBlock storage currentItem = idToBBlock[currentId];
-    //             items[currentIndex] = currentItem;
-    //             currentIndex += 1;
-    //         }
-    //     }
-    //     return items;
-    // }
 
     function getFeeMultiplier(uint256 bblockId) public view returns (uint256) {
         require(getBBlockIdCounter() >= bblockId);
@@ -339,13 +290,11 @@ contract BBoard is ERC721, ERC721URIStorage {
         return maxBBlocks;
     }
 
-    function setMaxBBlocks(uint256 value) public {
-        require(msg.sender == owner);
+    function setMaxBBlocks(uint256 value) public onlyOwner {
         maxBBlocks = value;
     }
 
-    function setBoolContentChangeFee(bool value) public {
-        require(msg.sender == owner);
+    function setBoolContentChangeFee(bool value) public onlyOwner {
         useFeeMultiplier = value;
     }
 

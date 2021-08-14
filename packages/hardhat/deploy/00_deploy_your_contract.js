@@ -90,8 +90,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   const idsCounter = await BBoard.getBBlockIdCounter();
   console.log("tokenIds counter: " + idsCounter);
-  console.log("basefee set to " +baseFee);
-
+  console.log("basefee set to " + baseFee);
 
   /*
     // Getting a previously deployed contract
