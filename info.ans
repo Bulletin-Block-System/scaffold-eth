@@ -1,0 +1,34 @@
+[0m[1mBack around the early 90s of the previous millenium, out of the underground
+software pirate ("warez") community on bulletin board systems (BBS), arose
+a unique and digital native artform known as ANSI art, often stylized
+"ANSi". This artwork started out as functional or commercial embellishments
+to advertise the bulletin boards or the groups that distributed warez but
+then grew into its own underground "art scene" with dedicated art boards
+and elite art groups with names like ACiD and iCE.
+
+ANSi art looks similar to 8-bit pixel art at a high level but came out of
+text and terminals. ANSI itself refers to ANSI escape sequences
+standardized by the ANSI standards organization. These escape codes along
+with ASCII characters were common on PCs of the DOS era when consumers
+interfaced with computers through a text interface, 80 columns wide by 25
+lines high.
+
+The ASCII standard allowed American English text and punctuation in the
+lower 7 bits of each byte but also a number of extra characters when using
+the 8th bit. This allowed text to show boxes or blocks, almost like a
+pixel. ANSI codes were used to set the foreground and background color and
+combined with boxes an image of low resolution could appear on a screen.
+
+Besides boxes, some characters could be used in a gradient of a background
+and foreground color. There were other differences with pixel art, notably
+that normal alphanumeric and standard English punctuation characters could
+be used. When ANSI codes aren't used, this is simply ASCII art.
+
+One other feature distinguished ANSi art. Most new text on a terminal
+appears on the bottom row, causing the old text to scroll up by one line.
+BBS connections were limited by the modem speeds of the era which were slow
+enough that you could visibly see each character transmitting across and
+appearing on your screen. Once your screen filled up 25 rows then new lines
+would cause the top to scroll off but this also allowed art that spanned
+much more than 25 rows and they were often several screen-fulls of blocks.
+But art generally expanded vertically, not horizontally.
