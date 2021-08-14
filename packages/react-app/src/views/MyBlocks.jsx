@@ -316,25 +316,30 @@ function BlockCards1stDozen({ tx, readContracts, writeContracts, browserAddress,
   const bBlocks = [...Array(12)].map((_, i) => useContractReader(readContracts, "BBoard", "fetchBBlockById", [i]));
   console.log(bBlocks);
   // [bblockId, owner, price, seller]
-  return bBlocks.map((b) => !b ? '' : (<BlockCard key={b.bblockId.toString()} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />));
+  return bBlocks.map((b) => !b ? '' : (<BlockCard key={'block-gen-' + b.bblockId.toString()} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />));
 }
 
 function BlockCardsForSale({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
   const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksForSale");
+  console.log(bBlocks);
   // [bblockId, owner, price, seller]
-  return bBlocks ? bBlocks.map((b) => (<BlockCard key={b.blockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
+  return bBlocks ? bBlocks.map((b) => (<BlockCard key={'block-sale-' + b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
 }
 
 function BlockCardsByAddress({ tx, readContracts, writeContracts, browserAddress, blockMintFee, ownerAddress } ) {
   const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksByAddress", [ownerAddress]);
+  console.log(bBlocks);
   // [bblockId, owner, price, seller]
-  return bBlocks ? bBlocks.map((b) => (<BlockCard key={b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
+  return bBlocks ? bBlocks.map((b) => (<BlockCard key={'block-addr-' + b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
 }
 
 function BlockCardsRecentlySaved({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
   const bBlocks = useContractReader(readContracts, "BBoard", "fetchLastNFTs");
+  console.log(bBlocks);
+  const _bBlocks = bBlocks ? bBlocks.filter((item, index, self) => self.findIndex(x => x.bblockId.toNumber() == item.bblockId.toNumber()) == index) : 0;
+  console.log(_bBlocks);
   // [bblockId, owner, price, seller]
-  return bBlocks ? bBlocks.map((b) => (<BlockCard key={b.blockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
+  return bBlocks ? _bBlocks.map((b) => (<BlockCard key={'block-rs-' + b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
 }
 
 function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAddress, tokenId, ownerAddress, seller, price } ) {
