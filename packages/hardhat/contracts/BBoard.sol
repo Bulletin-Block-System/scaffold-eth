@@ -20,7 +20,8 @@ contract BBoard is ERC721, ERC721URIStorage {
     uint256 private basefee = 500;
     uint256 private maxBBlocks = 400;
     bool private useFeeMultiplier = true;
-
+    uint256[] bblocksUpdated;
+    
     constructor() ERC721("BulletinBlock", "BBLK") {
         owner = payable(msg.sender);
         // mintOnDeploy();
@@ -123,7 +124,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         owner.transfer(getContentChangeFee(bblockId));
 
         _setTokenURI(bblockId, URI);
-
+        bblocksUpdated.push(bblockId);
         if (getBoolContentChangeFee()) idToBBlock[bblockId].feeMultiplier++;
     }
 
@@ -270,24 +271,24 @@ contract BBoard is ERC721, ERC721URIStorage {
         return _bblockIds.current();
     }
 
-    // function fetchLastNFTs() public view returns (BBlock[] memory) {
-    //     uint256 itemCount = 12;
-    //     uint256 currentIndex = 0;
-    //     uint256 x;
-    //     if(bblocksUpdated.length > 12) {
-    //         x = bblocksUpdated.length - 12;
-    //     }
-    //     else {
-    //         x = 0;
-    //     }
-    //     BBlock[] memory items = new BBlock[](itemCount);
-    //     for (uint i = x; i < bblocksUpdated.length; i++) {
-    //         BBlock storage currentItem = idToBBlock[bblocksUpdated[i]];
-    //         items[currentIndex] = currentItem;
-    //         currentIndex += 1;
-    //     }
-    //     return items;
-    // }
+    function fetchLastNFTs() public view returns (BBlock[] memory) {
+         uint256 itemCount = 12;
+         uint256 currentIndex = 0;
+         uint256 x;
+         if(bblocksUpdated.length > 12) {
+             x = bblocksUpdated.length - 12;
+         }
+         else {
+             x = 0;
+         }
+         BBlock[] memory items = new BBlock[](itemCount);
+         for (uint i = x; i < bblocksUpdated.length; i++) {
+             BBlock storage currentItem = idToBBlock[bblocksUpdated[i]];
+             items[currentIndex] = currentItem;
+             currentIndex += 1;
+         }
+         return items;
+    }
 
     // function fetchMyNFTs() public view returns (BBlock[] memory) {
     //     uint256 totalItemCount = _bblockIds.current();
