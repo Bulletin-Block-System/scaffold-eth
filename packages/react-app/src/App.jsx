@@ -197,8 +197,6 @@ function App(props) {
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
   const blockMintFee = useContractReader(readContracts, "BBoard", "getBasefee");
   const myBBlocksCount = useContractReader(readContracts, "BBoard", "balanceOf", [address]);
-  //const my1stBBlockTokenId = useContractReader(readContracts, "BBoard", "tokenOfOwnerByIndex", [address, 0]); // this would fail if no tokens owned
-  //const my1stBBlockTokenURI = useContractReader(readContracts, "BBoard", "tokenURI", [my1stBBlockTokenId]); // this would fail if no tokens owned
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
@@ -382,6 +380,16 @@ function App(props) {
       {networkDisplay}
       <HashRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
+          <Menu.Item key="/contractscaffold">
+            <Link
+              onClick={() => {
+                setRoute("/contractscaffold");
+              }}
+              to="/contractscaffold"
+            >
+              Contract
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/">
             <Link
               onClick={() => {
@@ -389,53 +397,13 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute("/hints");
-              }}
-              to="/hints"
-            >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/about">
-            <Link
-              onClick={() => {
-                setRoute("/about");
-              }}
-              to="/about"
-            >
-              About BBS
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/blocks">
-            <Link
-              onClick={() => {
-                setRoute("/blocks");
-              }}
-              to="/blocks"
-            >
-              My Blocks
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
+              Home
             </Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/contractscaffold">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -488,23 +456,7 @@ function App(props) {
               myBBlocksCount={myBBlocksCount}
             />
           </Route>
-          <Route path="/about">
-            <About
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-              myBBlocksCount={myBBlocksCount}
-            />
-          </Route>
-          <Route path="/blocks">
+          <Route path="/">
             <MyBlocks
               blockMintFee={blockMintFee}
               address={address}
@@ -523,6 +475,7 @@ function App(props) {
               myBBlocksCount={myBBlocksCount}
             />
           </Route>
+          {/*
           <Route path="/mainnetdai">
             <Contract
               name="DAI"
@@ -532,7 +485,6 @@ function App(props) {
               address={address}
               blockExplorer="https://etherscan.io/"
             />
-            {/*
             <Contract
               name="UNI"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
@@ -541,7 +493,6 @@ function App(props) {
               address={address}
               blockExplorer="https://etherscan.io/"
             />
-            */}
           </Route>
           <Route path="/subgraph">
             <Subgraph
@@ -551,6 +502,7 @@ function App(props) {
               mainnetProvider={mainnetProvider}
             />
           </Route>
+          */}
         </Switch>
       </HashRouter>
 
