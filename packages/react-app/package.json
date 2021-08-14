@@ -1,7 +1,7 @@
 {
   "name": "@scaffold-eth/react-app",
   "version": "1.0.0",
-  "_homepage": "https://Bulletin-Block-System.github.io/scaffold-eth",
+  "homepage": "https://Bulletin-Block-System.github.io/scaffold-eth",
   "browserslist": {
     "production": [
       ">0.2%",
