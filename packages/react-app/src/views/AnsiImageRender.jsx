@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { default as AnsiUp } from 'ansi_up';
 import './AnsiImageRender.css';
 
-export default function AnsiImageRender({ tokenURI, style }) {
+export default function AnsiImageRender({ tokenURI, extraClass, style }) {
   const [html, setNewState] = useState('');
   const [isFetching, setIsFetching] = useState(false);
 
@@ -68,7 +68,7 @@ export default function AnsiImageRender({ tokenURI, style }) {
   }
 
   return (
-    <pre dangerouslySetInnerHTML={{ __html: html }} style={style} className="ansi-img">
+    <pre dangerouslySetInnerHTML={{ __html: html }} style={style} className={"ansi-img " + extraClass} >
 
     </pre>
   );
