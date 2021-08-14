@@ -376,7 +376,6 @@ function MintBlockCard({ readContracts, blockMintFee } ) {
 }
 
 function BlockCardsForSale({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
-  //return (<span>BlockCardsForSale is broken</span>);
   const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksForSale");
   // [bblockId, owner, price, seller]
   return bBlocks ? bBlocks.map((b) => (<BlockCard key={b.blockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
@@ -386,6 +385,12 @@ function BlockCardsByAddress({ tx, readContracts, writeContracts, browserAddress
   const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksByAddress", [ownerAddress]);
   // [bblockId, owner, price, seller]
   return bBlocks ? bBlocks.map((b) => (<BlockCard key={b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
+}
+
+function BlockCardsRecentlySaved({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
+  const bBlocks = useContractReader(readContracts, "BBoard", "fetchLastNFTs");
+  // [bblockId, owner, price, seller]
+  return bBlocks ? bBlocks.map((b) => (<BlockCard key={b.blockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
 }
 
 function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAddress, tokenId, ownerAddress, seller, price } ) {
@@ -587,6 +592,10 @@ export default function MyBlocks({
             {showUpdateTokenUriModal && newTokenId && 
             <ShowUpdateTokenUriModalDialog tokenId={newTokenId} contentChangeFee={blockMintFee /*XXX assumes initial blockMintFee=contentChangeFee*/} isDefaultOpen={true} tx={tx} writeContracts={writeContracts} hideButton={true} onClose={() =>setshowUpdateTokenUriModal(false)}/>
             }
+            <h2 style={{fontFamily: '"Roboto", sans-serif', fontSize: '4em', fontWeight: 800}} className='foobar'>Recently Saved Blocks</h2>
+            <Grid container spacing={3,0} >
+              <BlockCardsRecentlySaved tx={tx} readContracts={readContracts} writeContracts={writeContracts} browserAddress={address} blockMintFee={blockMintFee} />
+            </Grid>
           </Grid>
         </Grid>
         <Divider />
