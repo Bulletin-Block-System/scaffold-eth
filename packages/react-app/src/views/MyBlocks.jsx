@@ -364,7 +364,7 @@ function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAd
             <div className="ansi-wrapper" style={{display: 'inline-block'}} >
               <AnsiImageRender extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />
             </div>
-            <h3>URI: {tokenURI}</h3>
+            <h3 style={{wordBreak: 'break-all'}}>URI: {tokenURI}</h3>
             <ul>
               <li>TokenId: {localTokenId}</li>
               <li>Row: {Math.floor(tokenId / 4)}</li>
@@ -374,7 +374,11 @@ function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAd
               <li>Price: {price ? price.toString() : 'N/A'}</li>
               <li>Write Fee: {contentChangeFee ? contentChangeFee.toString() : 'N/A'}</li>
             </ul>
-            <ShowUpdateTokenUriModalDialog tokenId={localTokenId} contentChangeFee={contentChangeFee} isDefaultOpen={false} tx={tx} readContracts={readContracts} writeContracts={writeContracts} hideButton={false} />
+            {
+              ownerAddress == browserAddress &&
+              <ShowUpdateTokenUriModalDialog tokenId={localTokenId} contentChangeFee={contentChangeFee} isDefaultOpen={false} tx={tx} readContracts={readContracts} writeContracts={writeContracts} hideButton={false} />
+            }
+            
             <Button
               /* MUI color="primary" variant="outlined" */
               type="primary" size="large"
