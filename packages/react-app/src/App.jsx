@@ -383,16 +383,6 @@ function App(props) {
       {networkDisplay}
       <HashRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/contractscaffold">
-            <Link
-              onClick={() => {
-                setRoute("/contractscaffold");
-              }}
-              to="/contractscaffold"
-            >
-              Contract
-            </Link>
-          </Menu.Item>
           <Menu.Item key="/">
             <Link
               onClick={() => {
