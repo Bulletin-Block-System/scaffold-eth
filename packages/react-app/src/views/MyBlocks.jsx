@@ -588,9 +588,12 @@ export default function MyBlocks({
                 console.log("awaiting metamask/web3 confirm result...", result);
                 console.log(await result);
                 */
-                let receipt = await _tx.wait(1);
+                let receipt = await _tx.wait(5);
                 console.log(receipt);
                 let evt = receipt.events.pop();
+                if (evt.event !== "BBlockCreated") {
+                  evt = receipt.events.pop(); // XXX HACK
+                }
                 console.assert(evt.event == "BBlockCreated", "bad event returned");
                 console.log(evt);
                 //console.log('RETURNED ', evt.args.tokenId);
