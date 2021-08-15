@@ -273,7 +273,7 @@ function NakedBlockById({ tx, readContracts, tokenId }) {
 }
 function GenesisScroll({ tx, readContracts /*, writeContracts, browserAddress, blockMintFee*/ } ) {
   const classes = useStyles();
-  const indices = [...Array(16)].map((_, i) => i);
+  const indices = [...Array(24)].map((_, i) => i);
   //const bBlockURIs = [...Array(16)].map((_, i) => useContractReader(readContracts, "BBoard", "tokenURI", [i], POLLTIME*100));
   return (
     <div className={classes.root}>
@@ -287,7 +287,11 @@ function GenesisScroll({ tx, readContracts /*, writeContracts, browserAddress, b
           </Grid><Grid container spacing={3,0} >
             {indices.slice(8, 12).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid><Grid container spacing={3,0} >
-            {indices.slice(8, 12).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
+            {indices.slice(12, 16).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
+          </Grid><Grid container spacing={3,0} >
+            {indices.slice(16, 20).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
+          </Grid><Grid container spacing={3,0} >
+            {indices.slice(20, 24).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid>
         </div>
       </Grid>
