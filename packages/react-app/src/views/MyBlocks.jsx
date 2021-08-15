@@ -323,7 +323,7 @@ function BlockCards1stDozen({ tx, readContracts, writeContracts, browserAddress,
 }
 
 function BlockCardsForSale({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
-  const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksForSale", POLLTIME);
+  const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksForSale", POLLTIME/10);
   console.log(bBlocks);
   // [bblockId, owner, price, seller]
   return bBlocks ? bBlocks.map((b) => (<BlockCard key={'block-sale-' + b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
@@ -332,7 +332,7 @@ function BlockCardsForSale({ tx, readContracts, writeContracts, browserAddress, 
 const POLLTIME = 30000;
 function BlockCardsByAddress({ tx, readContracts, writeContracts, browserAddress, blockMintFee, ownerAddress } ) {
   // TODO try useEffect
-  const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksByAddress", [ownerAddress], POLLTIME/2);
+  const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksByAddress", [ownerAddress], POLLTIME/10);
   console.log(bBlocks);
   // [bblockId, owner, price, seller]
   return bBlocks ? bBlocks.map((b) => (<BlockCard key={'block-addr-' + b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
@@ -375,6 +375,38 @@ function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAd
             <Button
               /* MUI color="primary" variant="outlined" */
               type="primary" size="large"
+              disabled={price == 0}
+              style={{ marginTop: 8 }}
+              onClick={async () => {
+                /* look how you call setPurpose on your contract: */
+                /* notice how you pass a call back for tx updates too */
+                // TODO function doesn't return but emits event we should watch for
+                const result = tx(writeContracts.BBoard.buyBBlock(tokenId, {
+                  value: price + blockMintFee
+                }), update => {
+                  console.log("📡 Transaction Update:", update);
+                  if (update && (update.status === "confirmed" || update.status === 1)) {
+                    console.log(" 🍾 Transaction " + update.hash + " finished!");
+                    console.log(
+                      " ⛽️ " +
+                      update.gasUsed +
+                      "/" +
+                      (update.gasLimit || update.gas) +
+                      " @ " +
+                      parseFloat(update.gasPrice) / 1000000000 +
+                      " gwei",
+                    );
+                  }
+                });
+                console.log("awaiting metamask/web3 confirm result...", result);
+                console.log(await result);
+              }}
+            >
+              Buy @{`${price} + ${blockMintFee}`}!
+            </Button>
+            <Button
+              /* MUI color="primary" variant="outlined" */
+              type="primary" size="large"
               disabled={ownerAddress != browserAddress}
               style={{ marginTop: 8 }}
               onClick={async () => {
@@ -403,6 +435,36 @@ function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAd
               }}
             >
               Put For Sale @{defaultSellPrice}!
+            </Button>
+            <Button
+              /* MUI color="primary" variant="outlined" */
+              type="primary" size="large"
+              disabled={seller != browserAddress}
+              style={{ marginTop: 8 }}
+              onClick={async () => {
+                /* look how you call setPurpose on your contract: */
+                /* notice how you pass a call back for tx updates too */
+                // TODO function doesn't return but emits event we should watch for
+                const result = tx(writeContracts.BBoard.cancelSale(tokenId), update => {
+                  console.log("📡 Transaction Update:", update);
+                  if (update && (update.status === "confirmed" || update.status === 1)) {
+                    console.log(" 🍾 Transaction " + update.hash + " finished!");
+                    console.log(
+                      " ⛽️ " +
+                      update.gasUsed +
+                      "/" +
+                      (update.gasLimit || update.gas) +
+                      " @ " +
+                      parseFloat(update.gasPrice) / 1000000000 +
+                      " gwei",
+                    );
+                  }
+                });
+                console.log("awaiting metamask/web3 confirm result...", result);
+                console.log(await result);
+              }}
+            >
+              Cancel Sale
             </Button>
           </Paper>
         </Grid>
