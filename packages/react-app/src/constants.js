@@ -1,5 +1,5 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "38bcdf8b7b12490d951d30e14a15fca2"; //"579e1e933d214d26beca63bb38e52fd0"; //"460f40a260564ac4a4f4b3fffb032dad";
+export const INFURA_ID = "1e8ecb0aa22b4c92b16d21d39c25dba7"; //"460f40a260564ac4a4f4b3fffb032dad";
 
 // MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
 export const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
@@ -80,7 +80,7 @@ export const NETWORKS = {
     chainId: 80001,
     price: 1,
     gasPrice: 1000000000,
-    rpcUrl: "https://polygon-mumbai.infura.io/v3/38bcdf8b7b12490d951d30e14a15fca2",
+    rpcUrl: "https://polygon-mumbai.infura.io/v3/1e8ecb0aa22b4c92b16d21d39c25dba7",
     faucet: "https://faucet.matic.network/",
     blockExplorer: "https://mumbai-explorer.matic.today/",
   },
