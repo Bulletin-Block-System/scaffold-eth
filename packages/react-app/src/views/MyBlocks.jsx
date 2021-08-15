@@ -275,13 +275,13 @@ function GenesisScroll({ tx, readContracts /*, writeContracts, browserAddress, b
         <h2 className={classes.sectionH2}>Genesis Scroll</h2>
         <div className="ansi-grid-wrapper" style={{color: 'white', backgroundColor: 'black'}}>
           <Grid container >
-            {indices.slice(0, 4).map((idx) => (<NakedBlockById tx={tx} readContracts={readContracts} tokenId={idx} />))}
+            {indices.slice(0, 4).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid><Grid container spacing={3,0} >
-            {indices.slice(4, 8).map((idx) => (<NakedBlockById tx={tx} readContracts={readContracts} tokenId={idx} />))}
+            {indices.slice(4, 8).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid><Grid container spacing={3,0} >
-            {indices.slice(8, 12).map((idx) => (<NakedBlockById tx={tx} readContracts={readContracts} tokenId={idx} />))}
+            {indices.slice(8, 12).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid><Grid container spacing={3,0} >
-            {indices.slice(8, 12).map((idx) => (<NakedBlockById tx={tx} readContracts={readContracts} tokenId={idx} />))}
+            {indices.slice(8, 12).map((idx) => (<NakedBlockById key={idx} tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid>
         </div>
       </Grid>
