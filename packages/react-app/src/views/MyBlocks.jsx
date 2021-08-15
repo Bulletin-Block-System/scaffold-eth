@@ -1,7 +1,7 @@
 import { SyncOutlined } from "@ant-design/icons";
 import { utils } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   useBalance,
   useContractLoader,
@@ -97,11 +97,11 @@ function MakeBlockModal() {
         Row: 0
       </p>
       <button>MINT NEXT AVAILABLE BLOCK</button>
-      <p>
+      <div>
         Current contents:
         
         <AnsiImageRender extraClass={classes.scrollAnsiBlock} tokenURI={"floppy.ans"} />
-      </p><p>
+      </div><p>
         Choose .ans file to save into your chosen block:
         <input type="file" id="input" onChange={(evt) => console.log("event: ", evt, "selected file: ", evt.target.files[0])} />
       </p><p>
@@ -203,11 +203,11 @@ function ShowUpdateTokenUriModalDialog({ tx, readContracts, writeContracts, toke
       <p>There's a small fee of {contentChangeFee ? contentChangeFee.toString() : '...'} that increases after every write.</p>
       <p>
         <input type="file" id="input" onChange={(evt) => processFile(evt.target.files[0])} />
-      </p><p>
+      </p><div>
         {fileObjectUrl}
         {selectedFileState.fileObjectUrl &&
           <AnsiImageRender extraClass={classes.scrollAnsiBlock} tokenURI={selectedFileState.fileObjectUrl} />}
-      </p>
+      </div>
       <div>
         {selectedFileState.fileState == 'SELECTED' && selectedFileState.file && <button onClick={() => uploadFileAndProceed()}>Upload</button>}
         {selectedFileState.fileState == 'UPLOADING' && <Spin />}
@@ -263,27 +263,27 @@ const useStyles = makeStyles((theme) => ({
 function GenesisScroll({ tx, readContracts /*, writeContracts, browserAddress, blockMintFee*/ } ) {
   const classes = useStyles();
   // assume tokenId starts from 0
-  const bBlockURIs = [...Array(16)].map((_, i) => useContractReader(readContracts, "BBoard", "tokenURI", [i]));
+  const bBlockURIs = [...Array(16)].map((_, i) => useContractReader(readContracts, "BBoard", "tokenURI", [i], POLLTIME*100));
   return (
     <div className={classes.root}>
       <Grid container justifyContent="center">
         <h2 className={classes.sectionH2}>Genesis Scroll</h2>
         <div className="ansi-grid-wrapper" style={{color: 'white', backgroundColor: 'black'}}>
           <Grid container >
-            {bBlockURIs.slice(0, 4).map((tokenURI) =>
-              (<AnsiImageRender extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+            {bBlockURIs.slice(0, 4).map((tokenURI, idx) =>
+              (<AnsiImageRender key={'r0-c'+idx} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
             )}
           </Grid><Grid container spacing={3,0} >
-            {bBlockURIs.slice(4, 8).map((tokenURI) =>
-              (<AnsiImageRender extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+            {bBlockURIs.slice(4, 8).map((tokenURI, idx) =>
+              (<AnsiImageRender key={'r1-c'+idx} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
             )}
           </Grid><Grid container spacing={3,0} >
-            {bBlockURIs.slice(8, 12).map((tokenURI) =>
-              (<AnsiImageRender extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+            {bBlockURIs.slice(8, 12).map((tokenURI, idx) =>
+              (<AnsiImageRender key={'r2-c'+idx} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
             )}
           </Grid><Grid container spacing={3,0} >
-            {bBlockURIs.slice(12, 16).map((tokenURI) =>
-              (<AnsiImageRender extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+            {bBlockURIs.slice(12, 16).map((tokenURI, idx) =>
+              (<AnsiImageRender key={'r3-c'+idx} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
             )}
           </Grid>
         </div>
@@ -312,29 +312,34 @@ function MintBlockCard({ readContracts, blockMintFee } ) {
   )
 }
 
-function BlockCards1stDozen({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
-  const bBlocks = [...Array(12)].map((_, i) => useContractReader(readContracts, "BBoard", "fetchBBlockById", [i]));
-  console.log(bBlocks);
+
+function BlockCards1({ tx, readContracts, writeContracts, browserAddress, blockMintFee, i } ) {
+  const b = useContractReader(readContracts, "BBoard", "fetchBBlockById", [i], POLLTIME*100);
   // [bblockId, owner, price, seller]
-  return bBlocks.map((b) => !b ? '' : (<BlockCard key={'block-gen-' + b.bblockId.toString()} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />));
+  return !b ? '' : (<BlockCard key={'block-gen-' + b.bblockId.toString()} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />);
+}
+function BlockCards1stDozen({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
+  return [...Array(12)].map((_, i) => (<BlockCards1 key={'b1st-'+i} tx={tx} readContracts={readContracts} writeContracts={writeContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} i={i} />));
 }
 
 function BlockCardsForSale({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
-  const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksForSale");
+  const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksForSale", POLLTIME);
   console.log(bBlocks);
   // [bblockId, owner, price, seller]
   return bBlocks ? bBlocks.map((b) => (<BlockCard key={'block-sale-' + b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
 }
 
+const POLLTIME = 30000;
 function BlockCardsByAddress({ tx, readContracts, writeContracts, browserAddress, blockMintFee, ownerAddress } ) {
-  const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksByAddress", [ownerAddress]);
+  // TODO try useEffect
+  const bBlocks = useContractReader(readContracts, "BBoard", "fetchBBlocksByAddress", [ownerAddress], POLLTIME/2);
   console.log(bBlocks);
   // [bblockId, owner, price, seller]
   return bBlocks ? bBlocks.map((b) => (<BlockCard key={'block-addr-' + b.bblockId} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />)) : (<span>...loading</span>);
 }
 
 function BlockCardsRecentlySaved({ tx, readContracts, writeContracts, browserAddress, blockMintFee } ) {
-  const bBlocks = useContractReader(readContracts, "BBoard", "fetchLastNFTs");
+  const bBlocks = useContractReader(readContracts, "BBoard", "fetchLastNFTs", POLLTIME);
   console.log(bBlocks);
   const _bBlocks = bBlocks ? bBlocks.filter((item, index, self) => self.findIndex(x => x.bblockId.toNumber() == item.bblockId.toNumber()) == index) : 0;
   console.log(_bBlocks);
@@ -343,8 +348,9 @@ function BlockCardsRecentlySaved({ tx, readContracts, writeContracts, browserAdd
 }
 
 function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAddress, tokenId, ownerAddress, seller, price } ) {
-  const tokenURI = useContractReader(readContracts, "BBoard", "tokenURI", [tokenId]);
-  const contentChangeFee = useContractReader(readContracts, "BBoard", "getContentChangeFee", [tokenId]);
+  // TODO make props 
+  const tokenURI = useContractReader(readContracts, "BBoard", "tokenURI", [tokenId], POLLTIME*10);
+  const contentChangeFee = useContractReader(readContracts, "BBoard", "getContentChangeFee", [tokenId], POLLTIME*10);
   // XXX is tokenId and bBlockId the same? is it reliable to calculate position?
   const classes = useStyles();
   const defaultSellPrice = 1000;
@@ -454,7 +460,6 @@ export default function MyBlocks({
                 setNewFilterAddress(e.target.value);
               }}
             />
-            <Button>XXX Bug: You need to switch tabs to refresh the new blocks</Button>
             <Button
               style={{ marginTop: 8 }}
               onClick={async () => {
@@ -466,7 +471,7 @@ export default function MyBlocks({
                   return;
                 }
                 setFilterAddress(addr);
-                const result = await tx(readContracts.BBoard.balanceOf(addr));
+                const result = await /*tx*/(readContracts.BBoard.balanceOf(addr));
                 setAddressBlockCount(result.toNumber());
               }}
             >Show Blocks of Another Address
