@@ -4,7 +4,6 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
 contract BBoard is ERC721, ERC721URIStorage {
@@ -256,14 +255,16 @@ contract BBoard is ERC721, ERC721URIStorage {
         if (bblocksUpdated.length > 12) {
             x = bblocksUpdated.length - 12;
         } else {
-            x = 0;
+            itemCount = bblocksUpdated.length;
         }
         BBlock[] memory items = new BBlock[](itemCount);
-        for (uint256 i = x; i < bblocksUpdated.length; i++) {
-            BBlock storage currentItem = idToBBlock[bblocksUpdated[i]];
+
+        for (uint256 i = bblocksUpdated.length; i > x; i--) {
+            BBlock storage currentItem = idToBBlock[bblocksUpdated[i - 1]];
             items[currentIndex] = currentItem;
             currentIndex += 1;
         }
+
         return items;
     }
 
