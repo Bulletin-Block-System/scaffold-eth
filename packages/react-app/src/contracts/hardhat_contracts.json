@@ -1615,7 +1615,7 @@
       "chainId": "80001",
       "contracts": {
         "BBoard": {
-          "address": "0x1D63C31de8f79A349E968cC48CeA16659f08B16F",
+          "address": "0xe1023c3E201987a151382Ba344c34657EaaE1783",
           "abi": [
             {
               "inputs": [],

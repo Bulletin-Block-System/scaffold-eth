@@ -54,6 +54,7 @@ export default function AnsiImageRender({ tokenURI, extraClass, style }) {
           const ansi_up = new AnsiUp();
           let htmlResp = ansi_up.ansi_to_html(text);
           setNewState(htmlResp);
+          localStorage.setItem(tokenURI, htmlResp);
           setIsFetching(false);
         })
         .catch(err => {
@@ -64,7 +65,12 @@ export default function AnsiImageRender({ tokenURI, extraClass, style }) {
   }
 
   if (!html && !isFetching) {
-    fetchHtml(tokenURI);
+    if (localStorage.getItem(tokenURI)) {
+      let htmlResp = localStorage.getItem(tokenURI);
+      setNewState(htmlResp);
+    } else {
+      fetchHtml(tokenURI);
+    }
   }
 
   return (
