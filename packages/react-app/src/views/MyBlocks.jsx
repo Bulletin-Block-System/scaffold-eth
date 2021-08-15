@@ -260,31 +260,28 @@ const useStyles = makeStyles((theme) => ({
         },
 }));
 
+function NakedBlockById({ tx, readContracts, tokenId }) {
+  const classes = useStyles();
+  const tokenURI = useContractReader(readContracts, "BBoard", "tokenURI", [tokenId], -1 /*not expecting updates POLLTIME*100*/);
+  return (<AnsiImageRender key={'naked-' + tokenId} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
+}
 function GenesisScroll({ tx, readContracts /*, writeContracts, browserAddress, blockMintFee*/ } ) {
   const classes = useStyles();
-  // assume tokenId starts from 0
-  const bBlockURIs = [...Array(16)].map((_, i) => useContractReader(readContracts, "BBoard", "tokenURI", [i], POLLTIME*100));
+  const indices = [...Array(16)].map((_, i) => i);
+  //const bBlockURIs = [...Array(16)].map((_, i) => useContractReader(readContracts, "BBoard", "tokenURI", [i], POLLTIME*100));
   return (
     <div className={classes.root}>
       <Grid container justifyContent="center">
         <h2 className={classes.sectionH2}>Genesis Scroll</h2>
         <div className="ansi-grid-wrapper" style={{color: 'white', backgroundColor: 'black'}}>
           <Grid container >
-            {bBlockURIs.slice(0, 4).map((tokenURI, idx) =>
-              (<AnsiImageRender key={'r0-c'+idx} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
-            )}
+            {indices.slice(0, 4).map((idx) => (<NakedBlockById tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid><Grid container spacing={3,0} >
-            {bBlockURIs.slice(4, 8).map((tokenURI, idx) =>
-              (<AnsiImageRender key={'r1-c'+idx} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
-            )}
+            {indices.slice(4, 8).map((idx) => (<NakedBlockById tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid><Grid container spacing={3,0} >
-            {bBlockURIs.slice(8, 12).map((tokenURI, idx) =>
-              (<AnsiImageRender key={'r2-c'+idx} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
-            )}
+            {indices.slice(8, 12).map((idx) => (<NakedBlockById tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid><Grid container spacing={3,0} >
-            {bBlockURIs.slice(12, 16).map((tokenURI, idx) =>
-              (<AnsiImageRender key={'r3-c'+idx} extraClass={classes.scrollAnsiBlock} tokenURI={tokenURI ? tokenURI : 'floppy.ans'} />)
-            )}
+            {indices.slice(8, 12).map((idx) => (<NakedBlockById tx={tx} readContracts={readContracts} tokenId={idx} />))}
           </Grid>
         </div>
       </Grid>
@@ -314,7 +311,7 @@ function MintBlockCard({ readContracts, blockMintFee } ) {
 
 
 function BlockCards1({ tx, readContracts, writeContracts, browserAddress, blockMintFee, i } ) {
-  const b = useContractReader(readContracts, "BBoard", "fetchBBlockById", [i], POLLTIME*100);
+  const b = useContractReader(readContracts, "BBoard", "fetchBBlockById", [i], -1 /* -1 no timer POLLTIME*100*/);
   // [bblockId, owner, price, seller]
   return !b ? '' : (<BlockCard key={'block-gen-' + b.bblockId.toString()} tx={tx} writeContracts={writeContracts} readContracts={readContracts} browserAddress={browserAddress} blockMintFee={blockMintFee} tokenId={b.bblockId} ownerAddress={b.owner} seller={b.seller} price={b.price} />);
 }
@@ -474,15 +471,12 @@ function BlockCard({ tx, readContracts, writeContracts, blockMintFee, browserAd
 export default function MyBlocks({
   blockMintFee,
   myBBlocksCount,
-  purpose,
-  setPurposeEvents,
   address,
   filterAddress,
   setFilterAddress,
   mainnetProvider,
   localProvider,
   yourLocalBalance,
-  price,
   tx,
   readContracts,
   writeContracts,
