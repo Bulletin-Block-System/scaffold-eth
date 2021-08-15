@@ -66,6 +66,12 @@ const useModalStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  scrollAnsiBlock: {
+    fontSize: 24,
+    lineHeight: '24px',
+    height: 240,
+    width: 270
+  },
 }));
 function MakeBlockModal() {
 
@@ -590,14 +596,16 @@ export default function MyBlocks({
                 */
                 let receipt = await _tx.wait(5);
                 console.log(receipt);
-                let evt = receipt.events.pop();
-                if (evt.event !== "BBlockCreated") {
-                  evt = receipt.events.pop(); // XXX HACK
-                }
-                console.assert(evt.event == "BBlockCreated", "bad event returned");
+                // let evt = receipt.events.pop();
+                // if (evt.event !== "BBlockCreated") {
+                //   evt = receipt.events.pop(); // XXX HACK
+                // }
+                // console.assert(evt.event == "BBlockCreated", "bad event returned");
+                let evt = receipt.events.find(e => e.event == "BBlockCreated");
+                console.assert(evt?.event == "BBlockCreated", "bad event returned");
                 console.log(evt);
                 //console.log('RETURNED ', evt.args.tokenId);
-                console.log('RETURNED ', evt.args[0].toNumber());
+                console.log('RETURNED ', evt?.args[0].toNumber());
                 // TODO save this new bblockId in local state, load it above in Your Blocks
 
                 if (evt.event == "BBlockCreated") {
