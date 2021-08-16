@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/scaffold-eth/static/css/main.51689c43.chunk.css",
-    "main.js": "/scaffold-eth/static/js/main.5968ed8a.chunk.js",
-    "main.js.map": "/scaffold-eth/static/js/main.5968ed8a.chunk.js.map",
+    "main.js": "/scaffold-eth/static/js/main.d3b0cb1f.chunk.js",
+    "main.js.map": "/scaffold-eth/static/js/main.d3b0cb1f.chunk.js.map",
     "runtime-main.js": "/scaffold-eth/static/js/runtime-main.9a971fbc.js",
     "runtime-main.js.map": "/scaffold-eth/static/js/runtime-main.9a971fbc.js.map",
     "static/css/2.80192323.chunk.css": "/scaffold-eth/static/css/2.80192323.chunk.css",
@@ -19,6 +19,6 @@
     "static/css/2.80192323.chunk.css",
     "static/js/2.856e12b2.chunk.js",
     "static/css/main.51689c43.chunk.css",
-    "static/js/main.5968ed8a.chunk.js"
+    "static/js/main.d3b0cb1f.chunk.js"
   ]
 }
