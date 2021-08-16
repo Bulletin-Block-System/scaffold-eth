@@ -1,93 +1,40 @@
-# 🏗 Scaffold-ETH
+# Bulletin Block System
+## _Your ANSi Artwork on Display_
 
-> everything you need to build on Ethereum! 🚀
+![](packages/react-app/public/BBS%20genesis.JPG?raw=true)
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+Back around the early 90s of the previous millenium, out of the underground software pirate ("warez") community on bulletin board systems (BBS), arose a unique and digital native artform known as ANSI art, often stylized "ANSi". This artwork started out as functional or commercial embellishments to advertise the bulletin boards or the groups that distributed warez but then grew into its own underground "art scene" with dedicated art boards and elite art groups with names like ACiD and iCE.
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+ANSi art looks similar to 8-bit pixel art at a high level but came out of text and terminals. ANSI itself refers to ANSI escape sequences standardized by the ANSI standards organization. These escape codes along with ASCII characters were common on PCs of the DOS era when consumers interfaced with computers through a text interface, 80 columns wide by 25 lines high.
 
+The ASCII standard allowed American English text and punctuation in the lower 7 bits of each byte but also a number of extra characters when using the 8th bit. This allowed text to show boxes or blocks, almost like a pixel. ANSI codes were used to set the foreground and background color and combined with boxes an image of low resolution could appear on a screen.
 
-# 🏄‍♂️ Quick Start
+Besides boxes, some characters could be used in a gradient of a background and foreground color. There were other differences with pixel art, notably that normal alphanumeric and standard English punctuation characters could be used. When ANSI codes aren't used, this is simply ASCII art.
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+## Features
 
-> clone/fork 🏗 scaffold-eth:
-
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
-```
-
-> install and start your 👷‍ Hardhat chain:
-
-```bash
-cd scaffold-eth
-yarn install
-yarn chain
-```
-
-> in a second terminal window, start your 📱 frontend:
-
-```bash
-cd scaffold-eth
-yarn start
-```
-
-> in a third terminal window, 🛰 deploy your contract:
-
-```bash
-cd scaffold-eth
-yarn deploy
-```
-
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
-
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
-
-📱 Open http://localhost:3000 to see the app
-
-# 📚 Documentation
-
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
-
-# 🔭 Learning Solidity
-
-📕 Read the docs: https://docs.soliditylang.org
-
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
-
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
-
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
-
-# 🛠 Buidl
-
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
+- Mint and host your ANSi files as image blocks
+- New blocks are attached in minted order to the ever growing Genesis Scroll
+- Change your ANSi image for something new
+- Sell your position for rich gains
+- If not the seaside villa, buy the adjacent block to a famous artist and get to rub 'blocks' with them
+- Hosted on Polygon(Matic) for speed and IPFS(Protocol labs-NFT storage) for eternity!
 
 
-# 💬 Support Chat
+## Try it out
+[Bulletin Block System] - The collective ANSi scroll
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
 
----
+## Development
 
-🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need, already working together:
+Join us in making this even better and polular!
+Make your changes and submit a pull request.
 
-- Hardhat for your local blockchain, deploying, and testing smart contracts.
-- React for building a frontend, using many useful pre-made components and hooks.
-- Ant for your UI. (You can easily changed to another library you prefer)
-- Surge / S3 / IPFS for publishing your app.
-- Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
-- Support for L2 / Sidechains like Optimism and Arbitrum.
+## License
 
----
+Have to think about it...
 
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
+[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+
+[Bulletin Block System]: <https://bulletin-block-system.github.io/scaffold-eth/#/>
+  
