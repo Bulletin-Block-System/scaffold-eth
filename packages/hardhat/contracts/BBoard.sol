@@ -45,11 +45,11 @@ contract BBoard is ERC721, ERC721URIStorage {
         return basefee;
     }
 
-    function setBasefee(uint256 x) public onlyOwner {
+    function setBasefee(uint256 x) external onlyOwner {
         basefee = x;
     }
 
-    function createToken() public payable returns (uint256) {
+    function createToken() external payable returns (uint256) {
         require(
             getBBlockIdCounter() <= getMaxBBlocks(),
             "max limit for BBlocks reached!"
@@ -78,7 +78,7 @@ contract BBoard is ERC721, ERC721URIStorage {
     }
 
     function addContentToBBlock(uint256 bblockId, string memory URI)
-        public
+        exernal
         payable
     {
         require(
@@ -102,7 +102,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         _setTokenURI(bblockId, URI);
     }
 
-    function sellBBlock(uint256 bblockId, uint256 price) public payable {
+    function sellBBlock(uint256 bblockId, uint256 price) external payable {
         require(
             idToBBlock[bblockId].seller == payable(address(0)),
             "BBlock already for sale"
@@ -128,7 +128,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         emit SaleCreated(bblockId, msg.sender, price);
     }
 
-    function cancelSale(uint256 bblockId) public {
+    function cancelSale(uint256 bblockId) external {
         // require(1 == 2, "nope");
 
         require(
@@ -147,7 +147,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         idToBBlock[bblockId].price = 0;
     }
 
-    function buyBBlock(uint256 bblockId) public payable {
+    function buyBBlock(uint256 bblockId) external payable {
         require(
             idToBBlock[bblockId].seller != msg.sender,
             "seller can't be buyer"
@@ -182,12 +182,12 @@ contract BBoard is ERC721, ERC721URIStorage {
         idToBBlock[bblockId].feeMultiplier = 0;
     }
 
-    function getPrice(uint256 bblockId) public view returns (uint256) {
+    function getPrice(uint256 bblockId) external view returns (uint256) {
         return idToBBlock[bblockId].price;
     }
 
     function fetchBBlockById(uint256 bblockId)
-        public
+        external
         view
         returns (BBlock memory)
     {
@@ -195,7 +195,7 @@ contract BBoard is ERC721, ERC721URIStorage {
     }
 
     function fetchBBlocksByAddress(address adr)
-        public
+        external
         view
         returns (BBlock[] memory)
     {
@@ -221,7 +221,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         return items;
     }
 
-    function fetchBBlocksForSale() public view returns (BBlock[] memory) {
+    function fetchBBlocksForSale() external view returns (BBlock[] memory) {
         uint256 totalItemCount = _bblockIds.current();
         uint256 itemCount = 0;
         uint256 currentIndex = 0;
@@ -248,7 +248,7 @@ contract BBoard is ERC721, ERC721URIStorage {
         return _bblockIds.current();
     }
 
-    function fetchLastNFTs() public view returns (BBlock[] memory) {
+    function fetchLastNFTs() external view returns (BBlock[] memory) {
         uint256 itemCount = 12;
         uint256 currentIndex = 0;
         uint256 x;
@@ -291,11 +291,11 @@ contract BBoard is ERC721, ERC721URIStorage {
         return maxBBlocks;
     }
 
-    function setMaxBBlocks(uint256 value) public onlyOwner {
+    function setMaxBBlocks(uint256 value) external onlyOwner {
         maxBBlocks = value;
     }
 
-    function setBoolContentChangeFee(bool value) public onlyOwner {
+    function setBoolContentChangeFee(bool value) external onlyOwner {
         useFeeMultiplier = value;
     }
 
