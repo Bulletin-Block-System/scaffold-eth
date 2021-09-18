@@ -78,7 +78,7 @@ contract BBoard is ERC721, ERC721URIStorage {
     }
 
     function addContentToBBlock(uint256 bblockId, string memory URI)
-        exernal
+        external
         payable
     {
         require(
